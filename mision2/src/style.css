@@ -1,0 +1,130 @@
+/* src/style.css */
+
+:root {
+  --lol-dorado: #c89b3c;
+  --lol-dorado-claro: #f0e6d2;
+  --lol-fondo: #091428;
+  --lol-panel: #010a13;
+  --lol-texto: #cdbe91;
+  --lol-error: #e23636;
+}
+
+body {
+  margin: 0;
+  padding: 30px 20px;
+  background-color: var(--lol-fondo);
+  color: var(--lol-texto);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  color: var(--lol-dorado);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+#buscador {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px 25px;
+  margin: 20px auto 10px;
+  background: var(--lol-panel);
+  border: 2px solid var(--lol-dorado);
+  color: var(--lol-dorado-claro);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#buscador::placeholder {
+  color: rgba(205, 190, 145, 0.5);
+}
+
+#buscador:focus {
+  box-shadow: 0 0 15px rgba(200, 155, 60, 0.4);
+  background: #02162b;
+}
+
+#stats {
+  color: #8890b5;
+  font-size: 0.9rem;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Sistema de cuadrícula para las tarjetas */
+.lista-campeones {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.lista-campeones li {
+  background: var(--lol-panel);
+  border: 1px solid rgba(200, 155, 60, 0.2);
+  padding: 25px;
+  border-radius: 10px;
+  text-align: left;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de barra superior dorada en cada tarjeta */
+.lista-campeones li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--lol-dorado);
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.lista-campeones li:hover {
+  transform: translateY(-5px);
+  border-color: var(--lol-dorado);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.lista-campeones li:hover::before {
+  opacity: 1;
+}
+
+/* Estilos para los estados de la UI */
+.estado-cargando, .estado-vacio {
+  font-size: 1.5rem;
+  color: var(--lol-dorado-claro);
+  margin-top: 60px;
+  animation: pulse 2s infinite;
+}
+
+.estado-error {
+  color: var(--lol-error);
+  font-weight: bold;
+  background: rgba(226, 54, 54, 0.1);
+  border: 1px solid var(--lol-error);
+  padding: 20px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 40px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
