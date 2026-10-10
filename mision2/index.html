@@ -1,13 +1,22 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mision2</title>
+    <title>League of Legends API</title>
+    <link rel="stylesheet" href="/src/style.css">
   </head>
   <body>
+    <h1>Buscador de Campeones de LoL</h1>
+    
+    <input type="text" id="buscador" placeholder="Busca un campeón..." autocomplete="off">
+    
+    <div id="stats" style="margin-bottom: 20px; font-weight: bold;"></div>
+    
+    <!-- Aquí es donde render.js inyectará los estados (cargando, error, vacío, datos) -->
     <div id="app"></div>
+
+    <!-- Carga de tu módulo orquestador -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
