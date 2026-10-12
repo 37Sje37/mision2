@@ -1,41 +1,65 @@
-// src/logic.js
-
-// 1. map(): Transforma la lista original para quedarnos solo con los datos que nos interesan
 export function transformarCampeones(campeonesBrutos) {
   return campeonesBrutos.map(campeon => {
+    // Validación de seguridad para la dificultad
+    const dificultad = (campeon.info && campeon.info.difficulty) ? campeon.info.difficulty : 0;
+    
+    // Obtener la imagen oficial de Data Dragon
+    const imagenUrl = (campeon.image && campeon.image.full) 
+      ? `https://ddragon.leagueoflegends.com/cdn/14.3.1/img/champion/${campeon.image.full}` 
+      : '';
+
     return {
       id: campeon.id,
       nombre: campeon.name,
       titulo: campeon.title,
-      roles: campeon.tags, // Es un array con los roles (Ej: ["Fighter", "Tank"])
-      dificultad: campeon.info.difficulty
+      roles: campeon.tags || [],
+      dificultad: dificultad,
+      imagen: imagenUrl
     };
   });
 }
 
-// 2. filter(): Filtra el array según lo que el usuario escriba en un buscador
-export function filtrarCampeones(campeones, textoBusqueda) {
-  if (!textoBusqueda) return campeones;
+// Ampliamos para filtrar también por rol
+export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
+  let filtrados = campeones;
   
-  const textoLimpio = textoBusqueda.toLowerCase();
+  if (textoBusqueda) {
+    const textoLimpio = textoBusqueda.toLowerCase();
+    filtrados = filtrados.filter(campeon => 
+      campeon.nombre.toLowerCase().includes(textoLimpio)
+    );
+  }
   
-  return campeones.filter(campeon => 
-    campeon.nombre.toLowerCase().includes(textoLimpio)
-  );
+  if (rolSeleccionado && rolSeleccionado !== 'Todos') {
+    filtrados = filtrados.filter(campeon => campeon.roles.includes(rolSeleccionado));
+  }
+  
+  return filtrados;
 }
 
-// 3. reduce(): Calcula un dato estadístico, por ejemplo, la suma total de las dificultades
+// Ampliamos reduce para contar roles
 export function calcularEstadisticas(campeones) {
-  if (campeones.length === 0) return { total: 0, dificultadMedia: 0 };
+  if (campeones.length === 0) return { total: 0, dificultadMedia: 0, rolesTotales: {} };
 
-  const sumaDificultad = campeones.reduce((acumulador, campeon) => {
-    return acumulador + campeon.dificultad;
-  }, 0);
+  const stats = campeones.reduce((acumulador, campeon) => {
+    acumulador.sumaDificultad += campeon.dificultad;
+    
+    // Contamos por rol
+    campeon.roles.forEach(rol => {
+      if (!acumulador.conteoRoles[rol]) {
+        acumulador.conteoRoles[rol] = 0;
+      }
+      acumulador.conteoRoles[rol]++;
+    });
+    
+    return acumulador;
+  }, { sumaDificultad: 0, conteoRoles: {} });
 
-  const media = (sumaDificultad / campeones.length).toFixed(1);
+  const media = (stats.sumaDificultad / campeones.length).toFixed(1);
 
   return {
     total: campeones.length,
-    dificultadMedia: media
+    dificultadMedia: media,
+    rolesTotales: stats.conteoRoles
   };
 }
