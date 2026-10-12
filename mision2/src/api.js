@@ -1,19 +1,39 @@
-// src/api.js
+import { obtenerCache, guardarCache } from './cache.js';
 
 const API_URL = 'https://ddragon.leagueoflegends.com/cdn/14.3.1/data/es_ES/champion.json';
 
 export async function fetchDatos() {
-  const respuesta = await fetch(API_URL);
+  // 1. Intentamos leer la caché válida primero
+  const cache = obtenerCache();
+  if (cache) return cache;
 
-  // Es obligatorio comprobar respuesta.ok para manejar correctamente los errores HTTP
-  if (!respuesta.ok) {
-    throw new Error(`Error en la petición: ${respuesta.status} - ${respuesta.statusText}`);
+  let respuesta;
+  try {
+    // 2a. Error de RED (Sin internet, DNS, etc.)
+    respuesta = await fetch(API_URL);
+  } catch (error) {
+    throw new Error('Error de red: Comprueba tu conexión a internet.');
   }
 
-  const datos = await respuesta.json();
-  
-  // Data Dragon devuelve los campeones dentro de un objeto llamado 'data'.
-  // Como la rúbrica exige usar métodos de array (map, filter, reduce), 
-  // usamos Object.values() para convertir ese objeto en un array de campeones.
-  return Object.values(datos.data); 
+  // 2b. Error HTTP (404, 500, etc.)
+  if (!respuesta.ok) {
+    throw new Error(`Error HTTP: El servidor respondió con estado ${respuesta.status}`);
+  }
+
+  let datos;
+  try {
+    // 2c. Error de parseo JSON
+    datos = await respuesta.json();
+  } catch (error) {
+    throw new Error('Error de formato: JSON inválido devuelto por el servidor.');
+  }
+
+  // 3. Validación de seguridad de la estructura (que datos.data exista)
+  if (!datos || !datos.data) {
+    throw new Error('Error en los datos: No se encontró la lista de campeones en la respuesta.');
+  }
+
+  const arrayCampeones = Object.values(datos.data);
+  guardarCache(arrayCampeones); // Guardamos para la próxima vez
+  return arrayCampeones;
 }
