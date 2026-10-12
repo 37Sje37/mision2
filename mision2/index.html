@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>League of Legends API</title>
-    <link rel="stylesheet" href="/src/style.css">
-  </head>
-  <body>
-    <h1>Buscador de Campeones de LoL</h1>
-    
-    <input type="text" id="buscador" placeholder="Busca un campeón..." autocomplete="off">
-    
-    <div id="stats" style="margin-bottom: 20px; font-weight: bold;"></div>
-    
-    <!-- Aquí es donde render.js inyectará los estados (cargando, error, vacío, datos) -->
-    <div id="app"></div>
-
-    <!-- Carga de tu módulo orquestador -->
-    <script type="module" src="/src/main.js"></script>
-  </body>
-</html>
+<select id="filtro-rol" style="margin-bottom: 20px; padding: 10px; border-radius: 5px;">
+  <option value="Todos">Todos los roles</option>
+  <option value="Fighter">Luchador (Fighter)</option>
+  <option value="Tank">Tanque (Tank)</option>
+  <option value="Mage">Mago (Mage)</option>
+  <option value="Assassin">Asesino (Assassin)</option>
+  <option value="Marksman">Tirador (Marksman)</option>
+  <option value="Support">Apoyo (Support)</option>
+</select>

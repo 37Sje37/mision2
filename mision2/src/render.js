@@ -1,26 +1,29 @@
-// src/render.js
-
-// Estado 1: Cargando
 export function mostrarCargando(contenedor) {
-  contenedor.innerHTML = '<p class="estado-cargando">⏳ Cargando campeones desde la Grieta del Invocador...</p>';
+  contenedor.innerHTML = '<p class="estado-cargando">⏳ Cargando campeones...</p>';
 }
 
-// Estado 2: Error
-export function mostrarError(contenedor, mensajeError) {
-  contenedor.innerHTML = ''; // Limpiamos
+export function mostrarError(contenedor, mensajeError, funcionReintento) {
+  contenedor.innerHTML = ''; 
+  const divError = document.createElement('div');
+  divError.className = 'estado-error';
+  
   const parrafo = document.createElement('p');
-  parrafo.className = 'estado-error';
-  // Usamos textContent por seguridad frente a XSS
-  parrafo.textContent = `❌ Oh no, ha ocurrido un error de conexión: ${mensajeError}`;
-  contenedor.appendChild(parrafo);
+  parrafo.textContent = `❌ ${mensajeError}`;
+  
+  const btnReintento = document.createElement('button');
+  btnReintento.textContent = '🔄 Reintentar';
+  btnReintento.className = 'btn-reintentar';
+  btnReintento.addEventListener('click', funcionReintento);
+  
+  divError.appendChild(parrafo);
+  divError.appendChild(btnReintento);
+  contenedor.appendChild(divError);
 }
 
-// Estado 3: Vacío
 export function mostrarVacio(contenedor) {
-  contenedor.innerHTML = '<p class="estado-vacio">⚠️ No se ha encontrado ningún campeón con ese nombre.</p>';
+  contenedor.innerHTML = '<p class="estado-vacio">⚠️ No se encontró ningún campeón.</p>';
 }
 
-// Estado 4: Datos
 export function renderizarCampeones(contenedor, campeones) {
   contenedor.innerHTML = ''; 
   
@@ -29,14 +32,38 @@ export function renderizarCampeones(contenedor, campeones) {
 
   campeones.forEach(campeon => {
     const elemento = document.createElement('li');
-    elemento.textContent = `${campeon.nombre}, ${campeon.titulo} (Dificultad: ${campeon.dificultad}) - Roles: ${campeon.roles.join(', ')}`;
+    
+    // Inyectamos la imagen
+    let htmlContent = '';
+    if (campeon.imagen) {
+      htmlContent += `<img src="${campeon.imagen}" alt="${campeon.nombre}" class="img-campeon">`;
+    }
+    
+    htmlContent += `
+      <div class="info-campeon">
+        <h3>${campeon.nombre}</h3>
+        <p>${campeon.titulo} (Dif: ${campeon.dificultad})</p>
+        <small>Roles: ${campeon.roles.join(', ')}</small>
+      </div>
+    `;
+    
+    elemento.innerHTML = htmlContent;
     lista.appendChild(elemento);
   });
 
   contenedor.appendChild(lista);
 }
 
-// Extra: Pintar las estadísticas que calculamos con reduce()
 export function renderizarEstadisticas(contenedor, estadisticas) {
-  contenedor.textContent = `Total mostrados: ${estadisticas.total} | Dificultad media: ${estadisticas.dificultadMedia}`;
+  if (estadisticas.total === 0) return;
+  
+  // Transformamos el objeto de roles en un texto legible
+  const conteoRolesTxt = Object.entries(estadisticas.rolesTotales)
+    .map(([rol, total]) => `${rol}: ${total}`)
+    .join(' | ');
+
+  contenedor.innerHTML = `
+    <div>Total mostrados: ${estadisticas.total} | Dificultad media: ${estadisticas.dificultadMedia}</div>
+    <div style="font-size: 0.8rem; margin-top: 5px; color: #a0a0a0;">${conteoRolesTxt}</div>
+  `;
 }
