@@ -1,19 +1,33 @@
-export function transformarCampeones(campeonesBrutos) {
-  return campeonesBrutos.map(campeon => {
-    const dificultad = (campeon.info && campeon.info.difficulty) ? campeon.info.difficulty : 0;
-    const imagenUrl = (campeon.image && campeon.image.full) 
-      ? `https://ddragon.leagueoflegends.com/cdn/14.3.1/img/champion/${campeon.image.full}` 
-      : '';
+const traduccionRoles = {
+  Fighter: 'Luchador', Tank: 'Tanque', Mage: 'Mago',
+  Assassin: 'Asesino', Marksman: 'Tirador (ADC)', Support: 'Apoyo (Supp)'
+};
 
-    return {
-      id: campeon.id,
-      nombre: campeon.name,
-      titulo: campeon.title,
-      roles: campeon.tags || [],
-      dificultad: dificultad,
-      imagen: imagenUrl
-    };
-  });
+export function transformarCampeones(campeonesBrutos, version) {
+  if (!Array.isArray(campeonesBrutos)) return [];
+
+  return campeonesBrutos
+    .filter(campeon => campeon && typeof campeon === 'object' && campeon.id)
+    .map(campeon => {
+      
+      const dificultad = campeon?.info?.difficulty ?? 0;
+      const imagenName = campeon?.image?.full;
+      
+      const imagenUrl = imagenName 
+        ? `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${imagenName}` 
+        : '';
+
+      const rolesTraducidos = (campeon?.tags || []).map(rol => traduccionRoles[rol] || rol);
+
+      return {
+        id: campeon.id,
+        nombre: campeon.name || 'Desconocido',
+        titulo: campeon.title || '',
+        roles: rolesTraducidos,
+        dificultad: dificultad,
+        imagen: imagenUrl
+      };
+    });
 }
 
 export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
@@ -27,7 +41,9 @@ export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
   }
   
   if (rolSeleccionado && rolSeleccionado !== 'Todos') {
-    filtrados = filtrados.filter(campeon => campeon.roles.includes(rolSeleccionado));
+    // Buscamos el rol traducido para que el filtro funcione con el desplegable
+    const rolTraducido = traduccionRoles[rolSeleccionado] || rolSeleccionado;
+    filtrados = filtrados.filter(campeon => campeon.roles.includes(rolTraducido));
   }
   
   return filtrados;

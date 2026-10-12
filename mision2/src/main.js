@@ -9,13 +9,24 @@ const selectRol = document.querySelector('#filtro-rol');
 
 let campeonesTransformados = [];
 
+// Función para no saturar el filtro mientras el usuario teclea (Debounce)
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
 export async function iniciarApp() {
   mostrarCargando(appContenedor);
   statsContenedor.textContent = ''; 
 
   try {
-    const datosBrutos = await fetchDatos();
-    campeonesTransformados = transformarCampeones(datosBrutos);
+    const { version, campeones } = await fetchDatos(); 
+    campeonesTransformados = transformarCampeones(campeones, version);
     actualizarInterfaz();
   } catch (error) {
     mostrarError(appContenedor, error.message, iniciarApp);
@@ -23,7 +34,8 @@ export async function iniciarApp() {
 }
 
 function actualizarInterfaz() {
-  const texto = inputBusqueda.value.trim();
+  // trim() quita espacios extra accidentales al principio o final
+  const texto = (inputBusqueda.value || '').trim();
   const rol = selectRol ? selectRol.value : 'Todos';
 
   const filtrados = filtrarCampeones(campeonesTransformados, texto, rol);
@@ -38,9 +50,13 @@ function actualizarInterfaz() {
   renderizarEstadisticas(statsContenedor, estadisticas);
 }
 
-inputBusqueda.addEventListener('input', actualizarInterfaz);
+// Retrasamos la búsqueda 300ms hasta que termine de escribir
+const busquedaOptimizada = debounce(actualizarInterfaz, 300);
+
+inputBusqueda.addEventListener('input', busquedaOptimizada);
+
 if (selectRol) {
-  selectRol.addEventListener('change', actualizarInterfaz);
+  selectRol.addEventListener('change', actualizarInterfaz); // El select es instantáneo
 }
 
 iniciarApp();

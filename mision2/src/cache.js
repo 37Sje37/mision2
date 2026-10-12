@@ -1,4 +1,4 @@
-const CACHE_KEY = 'lol_champions_cache';
+const CACHE_KEY = 'lol_champions_v2';
 const TIEMPO_EXPIRACION = 1000 * 60 * 60 * 24; // 24 horas
 
 export function obtenerCache() {
