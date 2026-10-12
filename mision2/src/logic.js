@@ -1,9 +1,6 @@
 export function transformarCampeones(campeonesBrutos) {
   return campeonesBrutos.map(campeon => {
-    // Validación de seguridad para la dificultad
     const dificultad = (campeon.info && campeon.info.difficulty) ? campeon.info.difficulty : 0;
-    
-    // Obtener la imagen oficial de Data Dragon
     const imagenUrl = (campeon.image && campeon.image.full) 
       ? `https://ddragon.leagueoflegends.com/cdn/14.3.1/img/champion/${campeon.image.full}` 
       : '';
@@ -19,7 +16,6 @@ export function transformarCampeones(campeonesBrutos) {
   });
 }
 
-// Ampliamos para filtrar también por rol
 export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
   let filtrados = campeones;
   
@@ -37,14 +33,12 @@ export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
   return filtrados;
 }
 
-// Ampliamos reduce para contar roles
 export function calcularEstadisticas(campeones) {
   if (campeones.length === 0) return { total: 0, dificultadMedia: 0, rolesTotales: {} };
 
   const stats = campeones.reduce((acumulador, campeon) => {
     acumulador.sumaDificultad += campeon.dificultad;
     
-    // Contamos por rol
     campeon.roles.forEach(rol => {
       if (!acumulador.conteoRoles[rol]) {
         acumulador.conteoRoles[rol] = 0;

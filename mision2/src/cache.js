@@ -1,5 +1,5 @@
 const CACHE_KEY = 'lol_champions_cache';
-const TIEMPO_EXPIRACION = 1000 * 60 * 60 * 24; // 24 horas en milisegundos
+const TIEMPO_EXPIRACION = 1000 * 60 * 60 * 24; // 24 horas
 
 export function obtenerCache() {
   try {
@@ -9,14 +9,13 @@ export function obtenerCache() {
     const datosGuardados = JSON.parse(item);
     const tiempoActual = Date.now();
     
-    // Si ha pasado el tiempo de expiración, borramos la caché antigua
     if (tiempoActual - datosGuardados.timestamp > TIEMPO_EXPIRACION) {
       localStorage.removeItem(CACHE_KEY);
       return null;
     }
     return datosGuardados.data;
   } catch (error) {
-    return null; // Si hay error parseando, actuamos como si no hubiera caché
+    return null; 
   }
 }
 

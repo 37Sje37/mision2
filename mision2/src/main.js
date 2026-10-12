@@ -9,23 +9,20 @@ const selectRol = document.querySelector('#filtro-rol');
 
 let campeonesTransformados = [];
 
-// Exportamos iniciarApp para podérsela pasar al botón de reintentar
 export async function iniciarApp() {
   mostrarCargando(appContenedor);
-  statsContenedor.textContent = ''; // Limpiamos stats
+  statsContenedor.textContent = ''; 
 
   try {
     const datosBrutos = await fetchDatos();
     campeonesTransformados = transformarCampeones(datosBrutos);
     actualizarInterfaz();
   } catch (error) {
-    // Le pasamos la función iniciarApp para el botón de reintento
     mostrarError(appContenedor, error.message, iniciarApp);
   }
 }
 
 function actualizarInterfaz() {
-  // Aplicamos trim() para ignorar espacios extra al principio o final
   const texto = inputBusqueda.value.trim();
   const rol = selectRol ? selectRol.value : 'Todos';
 
@@ -41,7 +38,6 @@ function actualizarInterfaz() {
   renderizarEstadisticas(statsContenedor, estadisticas);
 }
 
-// Escuchadores de eventos
 inputBusqueda.addEventListener('input', actualizarInterfaz);
 if (selectRol) {
   selectRol.addEventListener('change', actualizarInterfaz);

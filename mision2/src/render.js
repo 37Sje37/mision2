@@ -33,7 +33,6 @@ export function renderizarCampeones(contenedor, campeones) {
   campeones.forEach(campeon => {
     const elemento = document.createElement('li');
     
-    // Inyectamos la imagen
     let htmlContent = '';
     if (campeon.imagen) {
       htmlContent += `<img src="${campeon.imagen}" alt="${campeon.nombre}" class="img-campeon">`;
@@ -55,9 +54,11 @@ export function renderizarCampeones(contenedor, campeones) {
 }
 
 export function renderizarEstadisticas(contenedor, estadisticas) {
-  if (estadisticas.total === 0) return;
+  if (estadisticas.total === 0) {
+    contenedor.innerHTML = '';
+    return;
+  }
   
-  // Transformamos el objeto de roles en un texto legible
   const conteoRolesTxt = Object.entries(estadisticas.rolesTotales)
     .map(([rol, total]) => `${rol}: ${total}`)
     .join(' | ');
