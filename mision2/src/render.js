@@ -1,9 +1,13 @@
 export function mostrarCargando(contenedor) {
-  contenedor.innerHTML = '<p class="estado-cargando">⏳ Cargando campeones...</p>';
+  contenedor.textContent = ''; // Limpiador seguro (Mejor que innerHTML = '')
+  const p = document.createElement('p');
+  p.className = 'estado-cargando';
+  p.textContent = '⏳ Cargando campeones...';
+  contenedor.appendChild(p);
 }
 
 export function mostrarError(contenedor, mensajeError, funcionReintento) {
-  contenedor.innerHTML = ''; 
+  contenedor.textContent = ''; 
   const divError = document.createElement('div');
   divError.className = 'estado-error';
   
@@ -21,50 +25,72 @@ export function mostrarError(contenedor, mensajeError, funcionReintento) {
 }
 
 export function mostrarVacio(contenedor) {
-  contenedor.innerHTML = '<p class="estado-vacio">⚠️ No se encontró ningún campeón.</p>';
+  contenedor.textContent = '';
+  const p = document.createElement('p');
+  p.className = 'estado-vacio';
+  p.textContent = '⚠️ No se encontró ningún campeón.';
+  contenedor.appendChild(p);
 }
 
 export function renderizarCampeones(contenedor, campeones) {
-  contenedor.innerHTML = ''; 
+  contenedor.textContent = ''; 
   
   const lista = document.createElement('ul');
   lista.className = 'lista-campeones';
 
-  campeones.forEach(campeon => {
+  // Usamos map para crear los nodos (programación funcional)
+  const nodosLi = campeones.map(campeon => {
     const elemento = document.createElement('li');
     
-    let htmlContent = '';
     if (campeon.imagen) {
-      htmlContent += `<img src="${campeon.imagen}" alt="${campeon.nombre}" class="img-campeon">`;
+      const img = document.createElement('img');
+      img.src = campeon.imagen; // src y alt son seguros asignándolos directamente
+      img.alt = campeon.nombre;
+      img.className = 'img-campeon';
+      elemento.appendChild(img);
     }
     
-    htmlContent += `
-      <div class="info-campeon">
-        <h3>${campeon.nombre}</h3>
-        <p>${campeon.titulo} (Dif: ${campeon.dificultad})</p>
-        <small>Roles: ${campeon.roles.join(', ')}</small>
-      </div>
-    `;
+    const divInfo = document.createElement('div');
+    divInfo.className = 'info-campeon';
     
-    elemento.innerHTML = htmlContent;
-    lista.appendChild(elemento);
+    const h3 = document.createElement('h3');
+    h3.textContent = campeon.nombre; // textContent protege contra inyección XSS
+    
+    const pInfo = document.createElement('p');
+    pInfo.textContent = `${campeon.titulo} (Dif: ${campeon.dificultad})`;
+    
+    const small = document.createElement('small');
+    // map + join en lugar de un bucle extra
+    small.textContent = `Roles: ${campeon.roles.join(', ')}`;
+    
+    divInfo.appendChild(h3);
+    divInfo.appendChild(pInfo);
+    divInfo.appendChild(small);
+    
+    elemento.appendChild(divInfo);
+    return elemento;
   });
 
+  // Agregamos todos los nodos a la lista
+  nodosLi.forEach(nodo => lista.appendChild(nodo));
   contenedor.appendChild(lista);
 }
 
 export function renderizarEstadisticas(contenedor, estadisticas) {
-  if (estadisticas.total === 0) {
-    contenedor.innerHTML = '';
-    return;
-  }
+  contenedor.textContent = ''; 
+  if (estadisticas.total === 0) return;
   
   const conteoRolesTxt = Object.entries(estadisticas.rolesTotales)
     .map(([rol, total]) => `${rol}: ${total}`)
     .join(' | ');
 
-  contenedor.innerHTML = `
-    <div>Total mostrados: ${estadisticas.total} | Dificultad media: ${estadisticas.dificultadMedia}</div>
-    <div style="font-size: 0.8rem; margin-top: 5px; color: #a0a0a0;">${conteoRolesTxt}</div>
-  `;
+  const divPrincipal = document.createElement('div');
+  divPrincipal.textContent = `Total mostrados: ${estadisticas.total} | Dificultad media: ${estadisticas.dificultadMedia}`;
+  
+  const divRoles = document.createElement('div');
+  divRoles.className = 'stats-roles'; // Usando la clase CSS en vez de estilos en línea
+  divRoles.textContent = conteoRolesTxt;
+  
+  contenedor.appendChild(divPrincipal);
+  contenedor.appendChild(divRoles);
 }

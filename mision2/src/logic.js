@@ -52,17 +52,20 @@ export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
 export function calcularEstadisticas(campeones) {
   if (campeones.length === 0) return { total: 0, dificultadMedia: 0, rolesTotales: {} };
 
+  // Uso de reduce puro sin mutar objetos externos (Adiós forEach)
   const stats = campeones.reduce((acumulador, campeon) => {
-    acumulador.sumaDificultad += campeon.dificultad;
     
-    campeon.roles.forEach(rol => {
-      if (!acumulador.conteoRoles[rol]) {
-        acumulador.conteoRoles[rol] = 0;
-      }
-      acumulador.conteoRoles[rol]++;
-    });
-    
-    return acumulador;
+    const nuevosRoles = campeon.roles.reduce((accRoles, rol) => {
+      return {
+        ...accRoles,
+        [rol]: (accRoles[rol] || 0) + 1
+      };
+    }, acumulador.conteoRoles);
+
+    return {
+      sumaDificultad: acumulador.sumaDificultad + campeon.dificultad,
+      conteoRoles: nuevosRoles
+    };
   }, { sumaDificultad: 0, conteoRoles: {} });
 
   const media = (stats.sumaDificultad / campeones.length).toFixed(1);
