@@ -2,7 +2,7 @@ export function mostrarCargando(contenedor) {
   contenedor.textContent = ''; // Limpiador seguro (Mejor que innerHTML = '')
   const p = document.createElement('p');
   p.className = 'estado-cargando';
-  p.textContent = '⏳ Cargando campeones...';
+  p.textContent = ' Cargando campeones...';
   contenedor.appendChild(p);
 }
 
@@ -12,10 +12,10 @@ export function mostrarError(contenedor, mensajeError, funcionReintento) {
   divError.className = 'estado-error';
   
   const parrafo = document.createElement('p');
-  parrafo.textContent = `❌ ${mensajeError}`;
+  parrafo.textContent = ` ${mensajeError}`;
   
   const btnReintento = document.createElement('button');
-  btnReintento.textContent = '🔄 Reintentar';
+  btnReintento.textContent = 'Reintentar';
   btnReintento.className = 'btn-reintentar';
   btnReintento.addEventListener('click', funcionReintento);
   
@@ -28,7 +28,7 @@ export function mostrarVacio(contenedor) {
   contenedor.textContent = '';
   const p = document.createElement('p');
   p.className = 'estado-vacio';
-  p.textContent = '⚠️ No se encontró ningún campeón.';
+  p.textContent = ' No se encontró ningún campeón.';
   contenedor.appendChild(p);
 }
 

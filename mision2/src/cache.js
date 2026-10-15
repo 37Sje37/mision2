@@ -1,5 +1,5 @@
 const CACHE_KEY = 'lol_champions_v3';
-const TIEMPO_EXPIRACION = 1000 * 60 * 60 * 24; // 24 horas
+const TIEMPO_EXPIRACION = 1000 * 60 * 60 * 24; 
 
 export function obtenerCache() {
   try {
@@ -13,10 +13,9 @@ export function obtenerCache() {
       return null;
     }
 
-    // NUEVO: Validación estricta de la estructura en caché
     const data = datosGuardados.data;
     if (!data || typeof data !== 'object' || !data.version || !Array.isArray(data.campeones)) {
-      localStorage.removeItem(CACHE_KEY); // Si está corrupta, la borramos
+      localStorage.removeItem(CACHE_KEY); 
       return null;
     }
 

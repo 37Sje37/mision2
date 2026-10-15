@@ -1,9 +1,9 @@
 import { obtenerCache, guardarCache } from './cache.js';
 
 const VERSIONS_URL = 'https://ddragon.leagueoflegends.com/api/versions.json';
-const TIMEOUT_MS = 5000; // 5 segundos de límite
+const TIMEOUT_MS = 5000; 
 
-// NUEVO: Helper para cancelar la petición si tarda demasiado
+
 async function fetchConTimeout(url) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -42,7 +42,6 @@ export async function fetchDatos() {
   try {
     respuesta = await fetchConTimeout(API_URL);
   } catch (error) {
-    // Distinguimos si fue por timeout o caída de red total
     throw new Error(error.message.includes('espera') ? error.message : 'Error de red: Comprueba tu conexión a internet.');
   }
 

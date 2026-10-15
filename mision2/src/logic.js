@@ -41,7 +41,6 @@ export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
   }
   
   if (rolSeleccionado && rolSeleccionado !== 'Todos') {
-    // Buscamos el rol traducido para que el filtro funcione con el desplegable
     const rolTraducido = traduccionRoles[rolSeleccionado] || rolSeleccionado;
     filtrados = filtrados.filter(campeon => campeon.roles.includes(rolTraducido));
   }
@@ -52,7 +51,6 @@ export function filtrarCampeones(campeones, textoBusqueda, rolSeleccionado) {
 export function calcularEstadisticas(campeones) {
   if (campeones.length === 0) return { total: 0, dificultadMedia: 0, rolesTotales: {} };
 
-  // Uso de reduce puro sin mutar objetos externos (Adiós forEach)
   const stats = campeones.reduce((acumulador, campeon) => {
     
     const nuevosRoles = campeon.roles.reduce((accRoles, rol) => {

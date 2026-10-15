@@ -9,7 +9,6 @@ const selectRol = document.querySelector('#filtro-rol');
 
 let campeonesTransformados = [];
 
-// Función para no saturar el filtro mientras el usuario teclea (Debounce)
 function debounce(func, delay) {
   let timeoutId;
   return function (...args) {
@@ -34,7 +33,7 @@ export async function iniciarApp() {
 }
 
 function actualizarInterfaz() {
-  // trim() quita espacios extra accidentales al principio o final
+
   const texto = (inputBusqueda.value || '').trim();
   const rol = selectRol ? selectRol.value : 'Todos';
 
@@ -50,7 +49,6 @@ function actualizarInterfaz() {
   renderizarEstadisticas(statsContenedor, estadisticas);
 }
 
-// Retrasamos la búsqueda 300ms hasta que termine de escribir
 const busquedaOptimizada = debounce(actualizarInterfaz, 300);
 
 inputBusqueda.addEventListener('input', busquedaOptimizada);
